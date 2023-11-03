@@ -1,11 +1,15 @@
-import { Link } from "react-router-dom";
+/* eslint-disable no-unused-vars */
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import img from '../../assets/images/login/login.svg'
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProviders";
+import axios from "axios";
 
 const Login = () => {
 
     const { signIn } = useContext(AuthContext)
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const handleLogin = event => {
         event.preventDefault()
@@ -18,6 +22,17 @@ const Login = () => {
             .then(result => {
                 const user = result.user;
                 console.log(user);
+                const tokenUser = { email }
+                // get access token
+                axios.post('http://localhost:3000/jwt', tokenUser, {
+                    withCredentials: true
+                })
+                    .then(res => {
+                        console.log(res.data);
+                        if (res.data.success) {
+                            navigate(location?.state ? location?.state : '/')
+                        }
+                    })
             })
             .catch(error => console.log(error))
     }
