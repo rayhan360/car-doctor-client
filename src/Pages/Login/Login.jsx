@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import img from '../../assets/images/login/login.svg'
-import { useContext } from "react";
-import { AuthContext } from "../../providers/AuthProviders";
+// import { useContext } from "react";
+// import { AuthContext } from "../../providers/AuthProviders";
 import axios from "axios";
+import useAuthContext from "../../hooks/useAuthContext";
 
 const Login = () => {
-
-    const { signIn } = useContext(AuthContext)
+    const {signIn} = useAuthContext()
+    // const { signIn } = useContext(AuthContext)
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -24,7 +25,7 @@ const Login = () => {
                 console.log(user);
                 const tokenUser = { email }
                 // get access token
-                axios.post('http://localhost:3000/jwt', tokenUser, {
+                axios.post('https://car-doctor-server-henna-nu.vercel.app/jwt', tokenUser, {
                     withCredentials: true
                 })
                     .then(res => {

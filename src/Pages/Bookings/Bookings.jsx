@@ -1,29 +1,41 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProviders";
 import BookingRow from "./BookingRow";
-import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 
 const Bookings = () => {
     const { user } = useContext(AuthContext)
     const [bookings, setBookings] = useState([])
+    const axiosSecure = useAxiosSecure()
 
-    const url = `http://localhost:3000/bookings?email=${user?.email}`;
+    // const url = `https://car-doctor-server-henna-nu.vercel.app/bookings?email=${user?.email}`;
+    const url = `/bookings?email=${user?.email}`;
 
     useEffect(() => {
-        axios.get(url, {withCredentials: true})
-            .then(res => {
-                setBookings(res.data)
-            })
-        // fetch(url)
+
+        // axios using custom hook base url
+        axiosSecure.get(url)
+        .then(res => {
+            setBookings(res.data);
+        })
+
+        // axios without custom hook base url
+        // axios.get(url, {withCredentials: true})
+        //     .then(res => {
+        //         setBookings(res.data)
+        //     })
+
+        // fetch 
+        // fetch(url, {credentials: 'include' })
         //     .then(res => res.json())
         //     .then(data => setBookings(data))
-    }, [url])
+    }, [axiosSecure, url])
 
     const handleDelete = id => {
         const proceed = confirm('are you sure deleted it')
         if (proceed) {
-            fetch(`http://localhost:3000/bookings/${id}`, {
+            fetch(`https://car-doctor-server-henna-nu.vercel.app/bookings/${id}`, {
                 method: 'DELETE'
             })
                 .then(res => res.json())
@@ -39,7 +51,7 @@ const Bookings = () => {
     }
 
     const handleBookingConfirm = id => {
-        fetch(`http://localhost:3000/bookings/${id}`, {
+        fetch(`https://car-doctor-server-henna-nu.vercel.app/bookings/${id}`, {
             method: 'PATCH',
             headers: {
                 'content-type': 'application/json'
